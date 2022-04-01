@@ -37,6 +37,7 @@ namespace AnimalShelter.Api
       services.AddVersionedApiExplorer(o =>
       {
         o.GroupNameFormat = "'v'VVV";
+        o.SubstituteApiVersionInUrl = true;
       });
 
       services.AddApiVersioning(o =>
