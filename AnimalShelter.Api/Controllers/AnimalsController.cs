@@ -8,10 +8,13 @@ using AnimalShelter.Api.Models;
 
 namespace AnimalShelter.Api.Controllers
 {
+  /// <summary>
+  /// Full CRUD access to all the animals at our animal shelter.
+  /// </summary>
   [ApiController]
   [ApiVersion("1.0")]
   [Route("api/[controller]")]
-  [Route("api/{v:apiVersion}/[controller]")]
+  [Route("api/{apiVersion}/[controller]")]
   public class AnimalsController : ControllerBase
   {
     private readonly AnimalShelterApiContext _db;
@@ -44,6 +47,15 @@ namespace AnimalShelter.Api.Controllers
     }
 
     // POST /api/Animals
+    [HttpPost]
+    public async Task<ActionResult<Animal>> Post(Animal animal)
+    {
+      _db.Animals.Add(animal);
+      await _db.SaveChangesAsync();
+
+      return CreatedAtAction("Post", new { id = animal.AnimalId }, animal);
+    }
+
     // PUT /api/Animals/<id>
     // DELETE /api/Animals/<id>
 

@@ -14,6 +14,8 @@ namespace AnimalShelter.Api.Models
     public Status Status { get; set; }
   }
 
+  // This would fit better somewhere else instead of just in 
+  // AnimalShelter.Api.Models.Status, but I'm not sure where.
   public enum Status
   {
     Available,
