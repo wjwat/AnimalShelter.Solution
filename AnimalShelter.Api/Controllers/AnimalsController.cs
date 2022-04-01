@@ -8,8 +8,10 @@ using AnimalShelter.Api.Models;
 
 namespace AnimalShelter.Api.Controllers
 {
-  [Route("api/[controller]")]
   [ApiController]
+  [ApiVersion("1.0")]
+  [Route("api/[controller]")]
+  [Route("api/{v:apiVersion}/[controller]")]
   public class AnimalsController : ControllerBase
   {
     private readonly AnimalShelterApiContext _db;
@@ -28,6 +30,19 @@ namespace AnimalShelter.Api.Controllers
       return await query.ToListAsync();
     }
     // GET /api/Animals/<id>
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Animal>> GetAnimal(int id)
+    {
+      var animal = await _db.Animals.FindAsync(id);
+
+      if (animal == null)
+      {
+        return NotFound();
+      }
+
+      return animal;
+    }
+
     // POST /api/Animals
     // PUT /api/Animals/<id>
     // DELETE /api/Animals/<id>
