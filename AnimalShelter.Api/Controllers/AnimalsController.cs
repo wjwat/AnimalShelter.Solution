@@ -15,8 +15,8 @@ namespace AnimalShelter.Api.Controllers
   [ApiController]
   [ApiVersion("1")]
   [ApiVersion("2")]
+  [Route("api/v{version:apiVersion}/[controller]")]
   [Route("api/[controller]")]
-  [Route("api/{version:apiVersion}/[controller]")]
   public class AnimalsController : ControllerBase
   {
     private readonly AnimalShelterApiContext _db;
@@ -111,11 +111,8 @@ namespace AnimalShelter.Api.Controllers
     }
 
     /// <summary>
-    /// Kisses
+    /// Retrieve a random animal.
     /// </summary>
-    // TODO: figure out how to separate this out to another swagger doc, or
-    // indicate that it should only be available on another version in the url
-    [ApiVersion("2")]
     [MapToApiVersion("2")]
     [HttpGet("random")]
     public async Task<ActionResult<Animal>> Random()
