@@ -118,8 +118,11 @@ namespace AnimalShelter.Api
 
         app.UseSwaggerUI(c =>
         {
+          c.IndexStream = () => GetType().Assembly
+              .GetManifestResourceStream("index.html");
           foreach (var d in provider.ApiVersionDescriptions)
           {
+            System.Console.WriteLine("ASSSSSSSSSSSSS: {0}", d.GroupName);
             c.SwaggerEndpoint($"/swagger/{d.GroupName}/swagger.json",
                 d.GroupName.ToUpperInvariant());
           }
