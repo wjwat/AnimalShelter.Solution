@@ -13,7 +13,7 @@
     "Species": "Dog",
     "Breed": "Beagle",
     "Description": "Just one of the worst dogs, but also one of the best? A study in contradictions.",
-    "Status": 2
+    "Status": 0
   },
   {
     "AnimalId": 3,
@@ -21,7 +21,7 @@
     "Species": "Dog",
     "Breed": "Chihuahua",
     "Description": "Annoying, mean, won't stop shaking, growls at everything, please help us",
-    "Status": 1
+    "Status": 0
   },
   {
     "AnimalId": 4,
@@ -29,7 +29,7 @@
     "Species": "Cat",
     "Breed": "Fat",
     "Description": "Queen Salt has to have her chicken precisely at 5pm or you will get scratched. She has thumbs!",
-    "Status": 2
+    "Status": 1
   },
   {
     "AnimalId": 5,
