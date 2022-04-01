@@ -13,8 +13,8 @@ namespace AnimalShelter.Api.Controllers
   /// Full CRUD access to all the animals at our animal shelter.
   /// </summary>
   [ApiController]
-  [ApiVersion("1.0")]
-  [ApiVersion("1.1")]
+  [ApiVersion("1")]
+  [ApiVersion("2")]
   [Route("api/[controller]")]
   [Route("api/{version:apiVersion}/[controller]")]
   public class AnimalsController : ControllerBase
@@ -110,9 +110,13 @@ namespace AnimalShelter.Api.Controllers
       return NoContent();
     }
 
+    /// <summary>
+    /// Kisses
+    /// </summary>
     // TODO: figure out how to separate this out to another swagger doc, or
     // indicate that it should only be available on another version in the url
-    [MapToApiVersion("1.1")]
+    [ApiVersion("2")]
+    [MapToApiVersion("2")]
     [HttpGet("random")]
     public async Task<ActionResult<Animal>> Random()
     {
