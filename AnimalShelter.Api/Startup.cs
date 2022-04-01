@@ -13,6 +13,7 @@ using System.IO;
 using System.Reflection;
 
 using AnimalShelter.Api.Models;
+using AnimalShelter.Api.Swagger;
 
 namespace AnimalShelter.Api
 {
@@ -36,15 +37,13 @@ namespace AnimalShelter.Api
       services.AddVersionedApiExplorer(o =>
       {
         o.GroupNameFormat = "'v'VVV";
-        o.SubstituteApiVersionInUrl = true;
-        o.AssumeDefaultVersionWhenUnspecified = true;
-        o.DefaultApiVersion = new ApiVersion(2, 0);
       });
 
       services.AddApiVersioning(o =>
       {
         o.ReportApiVersions = true;
-        o.ApiVersionReader = new HeaderApiVersionReader("api-version");
+        o.AssumeDefaultVersionWhenUnspecified = true;
+        o.DefaultApiVersion = new ApiVersion(2, 0);
       });
 
       services.AddSwaggerGen(c =>
@@ -90,6 +89,9 @@ namespace AnimalShelter.Api
         // Generate XML comments for use with Swagger.
         var xml = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
         c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xml), includeControllerXmlComments: true);
+
+        c.DocumentFilter<RemoveDefaultApiVersionRouteDocumentFilter>();
+        c.OperationFilter<RemoveQueryApiVersionParamOperationFilter>();
       });
     }
 
@@ -110,12 +112,9 @@ namespace AnimalShelter.Api
             c.SwaggerEndpoint($"/swagger/{d.GroupName}/swagger.json",
                 d.GroupName.ToUpperInvariant());
           }
-        });
-          // c.SwaggerEndpoint("/swagger/v1/swagger.json", "AnimalShelterApi v1");
-          // c.SwaggerEndpoint("/swagger/v2/swagger.json", "AnimalShelterApi v2");
           // First argument is name of CSS file, second argument is media type
           //c.InjectStylesheet("/test.css");
-        // });
+        });
       }
 
       // Necessary to inject style sheet to control the look of swagger-ui
