@@ -13,11 +13,11 @@ namespace AnimalShelter.Api.Controllers
   /// Full CRUD access to all the animals at our animal shelter.
   /// </summary>
   [ApiController]
-  [ApiVersion("1")]
-  [ApiVersion("2")]
+  [ApiVersion("1.0")]
+  [ApiVersion("2.0")]
   [Route("api/v{version:apiVersion}/[controller]")]
   [Route("api/[controller]")]
-  public class AnimalsController : ControllerBase
+  public class AnimalsController : Controller
   {
     private readonly AnimalShelterApiContext _db;
 
@@ -27,14 +27,22 @@ namespace AnimalShelter.Api.Controllers
     }
 
     // GET /api/Animals
-    [HttpGet]
+    /// <summary>
+    /// Return a list of all animals currently at our shelter
+    /// </summary>
+    [HttpGet, MapToApiVersion("1.0")]
     public async Task<ActionResult<IEnumerable<Animal>>> Get()
     {
       var query = _db.Animals.AsQueryable();
 
       return await query.ToListAsync();
     }
+
     // GET /api/Animals/<id>
+    /// <summary>
+    /// Returns an animal with ID equal to {id}
+    /// </summary>
+    /// <response code="404">Unable to locate an animal with that ID</response>
     [HttpGet("{id}")]
     public async Task<ActionResult<Animal>> GetAnimal(int id)
     {
@@ -49,6 +57,9 @@ namespace AnimalShelter.Api.Controllers
     }
 
     // POST /api/Animals
+    /// <summary>
+    /// Creates an animal
+    /// </summary>
     [HttpPost]
     public async Task<ActionResult<Animal>> Post(Animal animal)
     {
@@ -59,6 +70,9 @@ namespace AnimalShelter.Api.Controllers
     }
 
     // PUT /api/Animals/<id>
+    /// <summary>
+    /// Updates the fields of an animal with ID of {id}
+    /// </summary>
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(int id, Animal animal)
     {
@@ -93,6 +107,10 @@ namespace AnimalShelter.Api.Controllers
     }
 
     // DELETE /api/Animals/<id>
+    /// <summary>
+    /// Removes the animal with an ID of {id}
+    /// </summary>
+    /// <param name="id" example="1">The Animal ID</param>
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
@@ -108,20 +126,6 @@ namespace AnimalShelter.Api.Controllers
 
       // Same question as in our PUT route.
       return NoContent();
-    }
-
-    /// <summary>
-    /// Retrieve a random animal.
-    /// </summary>
-    [MapToApiVersion("2")]
-    [HttpGet("random")]
-    public async Task<ActionResult<Animal>> Random()
-    {
-      var count = await _db.Animals.CountAsync();
-      var random = new Random()
-        .Next(count);
-
-      return await _db.Animals.Skip(random).FirstOrDefaultAsync();
     }
 
     private bool AnimalExists(int id)
