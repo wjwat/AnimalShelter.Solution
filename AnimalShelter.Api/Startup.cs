@@ -11,6 +11,8 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.IO;
 using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 using AnimalShelter.Api.Models;
 using AnimalShelter.Api.Swagger;
@@ -32,17 +34,25 @@ namespace AnimalShelter.Api
       services.AddDbContext<AnimalShelterApiContext>(opt =>
           opt.UseMySql(Configuration["ConnectionStrings:DefaultConnection"], ServerVersion.AutoDetect(Configuration["ConnectionStrings:DefaultConnection"])));
 
-      services.AddControllers();
+      services.AddControllers()
+          .AddJsonOptions(options =>
+          {
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+          });
 
       services.AddVersionedApiExplorer(o =>
       {
-        o.GroupNameFormat = "'v'VVV";
+        o.GroupNameFormat = "'v'V.v";
         o.SubstituteApiVersionInUrl = true;
       });
 
       services.AddApiVersioning(o =>
       {
-        o.ReportApiVersions = true;
+        // Our headers incorrectly report which endpoints are available for which
+        // endpoints. This comment describes what's going on in detail. Will
+        // need to do some further exploration later.
+        // https://github.com/dotnet/aspnet-api-versioning/issues/643#issuecomment-653623330
+        //o.ReportApiVersions = true;
         o.AssumeDefaultVersionWhenUnspecified = true;
         o.DefaultApiVersion = new ApiVersion(2, 0);
       });
@@ -52,10 +62,10 @@ namespace AnimalShelter.Api
         c.EnableAnnotations();
 
         // It would be nice to automagically generate these as we version our API.
-        c.SwaggerDoc("v1",
+        c.SwaggerDoc("v1.0",
         new OpenApiInfo {
-            Title = "AnimalShelterApi - v1",
-            Version = "v1",
+            Title = "AnimalShelterApi",
+            Version = "v1.0",
             Description = "Epicodus Week 13 Independent Project -- C# Building An API",
             TermsOfService = new Uri("http://example.com/FakeTermsOfService"),
             Contact = new OpenApiContact
@@ -69,10 +79,10 @@ namespace AnimalShelter.Api
               Url = new Uri("https://mit-license.org/")
             }
         });
-        c.SwaggerDoc("v2",
+        c.SwaggerDoc("v2.0",
         new OpenApiInfo {
-            Title = "AnimalShelterApi - v2",
-            Version = "v2",
+            Title = "AnimalShelterApi",
+            Version = "v2.0",
             Description = "Epicodus Week 13 Independent Project -- C# Building An API",
             TermsOfService = new Uri("http://example.com/FakeTermsOfService"),
             Contact = new OpenApiContact
@@ -114,7 +124,7 @@ namespace AnimalShelter.Api
                 d.GroupName.ToUpperInvariant());
           }
           // First argument is name of CSS file, second argument is media type
-          //c.InjectStylesheet("/test.css");
+          c.InjectStylesheet("/swagger-override.css");
         });
       }
 
