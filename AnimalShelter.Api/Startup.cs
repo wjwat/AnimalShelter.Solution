@@ -39,15 +39,27 @@ namespace AnimalShelter.Api
 
       services.AddSwaggerGen(c =>
       {
-        c.SwaggerDoc("v1", new OpenApiInfo {
-            Title = "AnimalShelterApi",
+        c.SwaggerDoc("v1",
+        new OpenApiInfo {
+            Title = "AnimalShelterApi - v1",
             Version = "v1",
-            Description = ""
+            Description = "Epicodus Week 13 Independent Project -- C# Building An API",
+            TermsOfService = new Uri("http://example.com/FakeTermsOfService"),
+            Contact = new OpenApiContact
+            {
+              Name = "Will Watkins",
+              Email = "wjwat@onionslice.org"
+            },
+            License = new OpenApiLicense
+            {
+              Name = "MIT",
+              Url = new Uri("https://mit-license.org/")
+            }
         });
 
         // Generate XML comments for use with Swagger.
         var xml = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-        c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xml));
+        c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xml), includeControllerXmlComments: true);
       });
     }
 
