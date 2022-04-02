@@ -170,9 +170,13 @@ namespace AnimalShelter.Api
 
       app.UseAuthorization();
 
-      app.UseEndpoints(endpoints => endpoints
+      app.UseEndpoints(endpoints =>
+      {
+        endpoints
           .MapControllers()
-          .RequireCors("CorsPolicy"));
+          .RequireCors("CorsPolicy");
+      });
+
     }
   }
 }
