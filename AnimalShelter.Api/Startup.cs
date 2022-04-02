@@ -18,6 +18,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using AnimalShelter.Api.Models;
+using AnimalShelter.Api.Services;
 using AnimalShelter.Api.Swagger;
 
 namespace AnimalShelter.Api
@@ -44,6 +45,20 @@ namespace AnimalShelter.Api
               .AllowAnyMethod()
           )
       );
+
+      services.AddHttpContextAccessor();
+      services.AddSingleton<IUriService>(o =>
+      {
+        var accessor = o.GetRequiredService<IHttpContextAccessor>();
+        var request = accessor.HttpContext.Request;
+        var uri = string.Concat(
+            request.Scheme,
+            "://",
+            request.Host.ToUriComponent()
+          );
+        
+        return new UriService(uri);
+      });
 
       services.AddControllers()
           .AddJsonOptions(options =>
