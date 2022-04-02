@@ -1,16 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Gochi+Hand&display=swap');
-
-* {
-  font-family: 'Gochi Hand' !important;
-}
-
 img[alt="Swagger UI"] {
   content: url('/favicon.png');
 }
 
 .swagger-ui .topbar {
   background: linear-gradient(to right, #c03a48, #d35d39, #b3801a, #60aa20, #1a366e, #a83293, #c03a48, #d35d39, #b3801a, #60aa20, #1a366e, #a83293, #c03a48);
-  /* background-clip: ; */
   background-color: transparent;
   animation: rainbow_animation 3s ease-in-out infinite;
   background-size: 400% 100%;
