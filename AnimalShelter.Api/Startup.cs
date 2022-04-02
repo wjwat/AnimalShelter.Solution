@@ -1,13 +1,16 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.OpenApi.Models;
+using Microsoft.Net.Http.Headers;
 using System;
 using System.IO;
 using System.Reflection;
@@ -33,6 +36,14 @@ namespace AnimalShelter.Api
     {
       services.AddDbContext<AnimalShelterApiContext>(opt =>
           opt.UseMySql(Configuration["ConnectionStrings:DefaultConnection"], ServerVersion.AutoDetect(Configuration["ConnectionStrings:DefaultConnection"])));
+
+      services.AddCors(options => options
+          .AddPolicy("CorsPolicy", builder => builder
+              .AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+          )
+      );
 
       services.AddControllers()
           .AddJsonOptions(options =>
@@ -112,17 +123,18 @@ namespace AnimalShelter.Api
       if (env.IsDevelopment())
       {
         app.UseDeveloperExceptionPage();
+
         app.UseSwagger();
 
         var provider = app.ApplicationServices.GetService<IApiVersionDescriptionProvider>();
 
         app.UseSwaggerUI(c =>
         {
-          c.IndexStream = () => GetType().Assembly
-              .GetManifestResourceStream("index.html");
+          c.DocumentTitle = "AnimalAPI -- It really whips the Llama's Ass";
+          c.IndexStream = () => GetType().Assembly.GetManifestResourceStream("AnimalShelter.Api.Swagger.index.html");
+
           foreach (var d in provider.ApiVersionDescriptions)
           {
-            System.Console.WriteLine("ASSSSSSSSSSSSS: {0}", d.GroupName);
             c.SwaggerEndpoint($"/swagger/{d.GroupName}/swagger.json",
                 d.GroupName.ToUpperInvariant());
           }
@@ -136,12 +148,16 @@ namespace AnimalShelter.Api
 
       app.UseRouting();
 
+      // With endpoint routing, the CORS middleware must be configured to
+      // execute between the calls to UseRouting and UseEndpoints.
+      // ref: https://docs.microsoft.com/en-us/aspnet/core/security/cors?view=aspnetcore-5.0
+      app.UseCors("CorsPolicy");
+
       app.UseAuthorization();
 
-      app.UseEndpoints(endpoints =>
-      {
-        endpoints.MapControllers();
-      });
+      app.UseEndpoints(endpoints => endpoints
+          .MapControllers()
+          .RequireCors("CorsPolicy"));
     }
   }
 }
