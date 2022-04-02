@@ -18,3 +18,36 @@ img[alt="Swagger UI"] {
     background-position: 100% 0;
   }
 }
+
+/*** Lil Guy ***/
+
+footer > div > a {
+  text-decoration: none;
+}
+
+.lilguy {
+  font-size: 1.5rem;
+  font-family: monospace, monospace;
+  font-weight: bold;
+}
+
+.lilguy:hover {
+  color: red;
+  font-weight: bold;
+  text-shadow: black 1px 1px;
+}
+
+.lilguy:hover:after {
+  color: red;
+  content: " <(Where am I? What am I doing? Who are you?)";
+}
+
+@keyframes rainbow_animation {
+  0%,100% {
+    background-position: 0 0;
+  }
+
+  50% {
+    background-position: 100% 0;
+  }
+}
