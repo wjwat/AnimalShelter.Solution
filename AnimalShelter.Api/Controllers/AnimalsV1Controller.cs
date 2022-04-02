@@ -5,7 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using AnimalShelter.Api.Filters;
+using AnimalShelter.Api.Helpers;
 using AnimalShelter.Api.Models;
+using AnimalShelter.Api.Services;
+using AnimalShelter.Api.Wrappers;
 
 namespace AnimalShelter.Api.Controllers
 {
@@ -20,10 +24,12 @@ namespace AnimalShelter.Api.Controllers
   public class AnimalsController : Controller
   {
     private readonly AnimalShelterApiContext _db;
+    private readonly IUriService _uriService;
 
-    public AnimalsController(AnimalShelterApiContext db)
+    public AnimalsController(AnimalShelterApiContext db, IUriService uriService)
     {
       _db = db;
+      _uriService = uriService;
     }
 
     // GET /api/Animals
@@ -31,11 +37,29 @@ namespace AnimalShelter.Api.Controllers
     /// Return a list of all animals currently at our shelter
     /// </summary>
     [HttpGet, MapToApiVersion("1.0")]
-    public async Task<ActionResult<IEnumerable<Animal>>> Get()
+    public async Task<ActionResult<IEnumerable<Animal>>> Get(
+      [FromQuery] PaginationFilter filter
+    )
     {
+      var route = Request.Path.Value;
+      var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize);
       var query = _db.Animals.AsQueryable();
 
-      return await query.ToListAsync();
+      var pagedData = await query
+          .Skip((validFilter.PageNumber -1) * validFilter.PageSize)
+          .Take(validFilter.PageSize)
+          .ToListAsync();
+      var totalRecords = await _db.Animals.CountAsync();
+
+      var resp = PaginationHelper.CreatePagedResponse<Animal>(
+          pagedData,
+          validFilter,
+          totalRecords,
+          _uriService,
+          route
+      );
+
+      return Ok(resp);
     }
 
     // GET /api/Animals/<id>
