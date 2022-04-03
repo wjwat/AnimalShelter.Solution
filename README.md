@@ -132,7 +132,7 @@ Our API implements two versions. All functionality from V1.0 is present in V2.0 
 <dl>
  <dt>GET /api/v2.0/Animals</dt>
  <dd>Returns a filtered, paginated list of animals.</dd>
- <dd>Takes no parameters besides those used for pagination (pageNumber and pageSize).</dd>
+ <dd>No parameters are required, but available parameters are listed below.</dd>
  <dd><b>Parameters</b>
   <ul>
     <li><b>pageNumber</b>: The page you would like to visit.</li>
